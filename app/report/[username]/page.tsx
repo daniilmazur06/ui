@@ -135,7 +135,7 @@ export default function ReportPage() {
 
   if (!username) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <div className="flex items-center justify-center px-6 py-20">
         <p className="text-muted-foreground">Missing username.</p>
         <Link href="/" className="text-primary ml-2 hover:underline">Go home</Link>
       </div>
@@ -144,8 +144,8 @@ export default function ReportPage() {
 
   if (loading && !report) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <header className="border-b border-border bg-card">
+      <div>
+        <div className="border-b border-border bg-card">
           <div className="max-w-4xl mx-auto px-6 py-6">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-full bg-secondary animate-pulse" />
@@ -155,7 +155,7 @@ export default function ReportPage() {
               </div>
             </div>
           </div>
-        </header>
+        </div>
         <div className="max-w-4xl mx-auto px-6 py-8">
           <div className="h-24 w-48 bg-secondary rounded-lg animate-pulse mb-8" />
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
@@ -175,7 +175,7 @@ export default function ReportPage() {
 
   if (error && !report) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+      <div className="flex flex-col items-center justify-center px-6 py-20">
         <p className="text-destructive mb-4">{error}</p>
         <div className="flex gap-3">
           <button
@@ -200,8 +200,8 @@ export default function ReportPage() {
   const rec = report.recommendation;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card">
+    <div>
+      <div className="border-b border-border bg-card">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <div className="flex flex-wrap items-center gap-4">
             <Image
@@ -232,7 +232,7 @@ export default function ReportPage() {
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">

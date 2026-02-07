@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 export default function HomePage() {
   const [username, setUsername] = useState("");
@@ -41,19 +40,8 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="font-semibold text-lg text-foreground">Headstarter Track</span>
-          <nav className="flex gap-6 text-sm text-muted-foreground">
-            <a href="#how-it-works" className="hover:text-primary transition-colors">How it works</a>
-            <a href="#features" className="hover:text-primary transition-colors">Features</a>
-          </nav>
-        </div>
-      </header>
-
-      <main>
-        <section className="pt-20 pb-24 px-6">
+    <div>
+      <section className="pt-20 pb-24 px-6">
           <div className="max-w-2xl mx-auto text-center">
             <span className="inline-block px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-medium mb-6 tracking-wide uppercase">
               GitHub Profile Analytics
@@ -155,17 +143,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-      </main>
-
-      <footer className="border-t border-border bg-card py-8 px-6 mt-auto">
-        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-            GitHub
-          </a>
-          <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
-          <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
-        </div>
-      </footer>
     </div>
   );
 }
