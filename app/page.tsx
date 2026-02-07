@@ -41,24 +41,27 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <span className="font-semibold text-lg text-slate-800">Headstarter Track</span>
-          <nav className="flex gap-6 text-sm text-slate-600">
-            <a href="#how-it-works" className="hover:text-slate-900">How it works</a>
-            <a href="#features" className="hover:text-slate-900">Features</a>
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <span className="font-semibold text-lg text-foreground">Headstarter Track</span>
+          <nav className="flex gap-6 text-sm text-muted-foreground">
+            <a href="#how-it-works" className="hover:text-primary transition-colors">How it works</a>
+            <a href="#features" className="hover:text-primary transition-colors">Features</a>
           </nav>
         </div>
       </header>
 
       <main>
-        <section className="pt-16 pb-20 px-4">
+        <section className="pt-20 pb-24 px-6">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 mb-4">
+            <span className="inline-block px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-medium mb-6 tracking-wide uppercase">
+              GitHub Profile Analytics
+            </span>
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-5 text-balance">
               Headstarter Track
             </h1>
-            <p className="text-xl text-slate-600 mb-10">
+            <p className="text-xl text-muted-foreground mb-12 leading-relaxed">
               Turn GitHub profiles into hiring-ready insights.
             </p>
             <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center max-w-md mx-auto">
@@ -67,53 +70,56 @@ export default function HomePage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="GitHub username"
-                className="flex-1 min-w-0 px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="flex-1 min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent shadow-sm"
                 disabled={loading}
                 aria-label="GitHub username"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors shadow-sm"
               >
                 {loading ? "Analyzing…" : "Analyze Profile"}
               </button>
             </form>
-            <p className="mt-3 text-sm text-slate-500">
-              No login required. Takes ~10–30 seconds.
+            <p className="mt-4 text-sm text-muted-foreground">
+              No login required. Takes ~10-30 seconds.
             </p>
             {error && (
-              <p className="mt-3 text-sm text-red-600" role="alert">
+              <p className="mt-3 text-sm text-destructive" role="alert">
                 {error}
               </p>
             )}
           </div>
         </section>
 
-        <section id="how-it-works" className="py-16 px-4 bg-white border-y border-slate-200/80">
+        <section id="how-it-works" className="py-20 px-6">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-slate-900 text-center mb-12">
+            <h2 className="text-2xl font-bold text-foreground text-center mb-4 text-balance">
               How it works
             </h2>
-            <div className="grid sm:grid-cols-3 gap-8">
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-6 text-center">
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-4 font-semibold">1</div>
-                <h3 className="font-semibold text-slate-900 mb-2">Fetch GitHub profile + repos</h3>
-                <p className="text-sm text-slate-600">
+            <p className="text-center text-muted-foreground mb-12 max-w-lg mx-auto">
+              Three simple steps to get actionable hiring insights.
+            </p>
+            <div className="grid sm:grid-cols-3 gap-6">
+              <div className="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+                <div className="w-10 h-10 rounded-lg bg-accent text-accent-foreground flex items-center justify-center mx-auto mb-4 font-semibold text-sm">1</div>
+                <h3 className="font-semibold text-foreground mb-2">Fetch GitHub profile + repos</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   We pull your public profile and top repos (by recency and popularity), ignoring forks.
                 </p>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-6 text-center">
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-4 font-semibold">2</div>
-                <h3 className="font-semibold text-slate-900 mb-2">Score engineering signals</h3>
-                <p className="text-sm text-slate-600">
+              <div className="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+                <div className="w-10 h-10 rounded-lg bg-accent text-accent-foreground flex items-center justify-center mx-auto mb-4 font-semibold text-sm">2</div>
+                <h3 className="font-semibold text-foreground mb-2">Score engineering signals</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   We evaluate docs, tests, CI, activity, and tech breadth to produce category scores.
                 </p>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-6 text-center">
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-4 font-semibold">3</div>
-                <h3 className="font-semibold text-slate-900 mb-2">Generate hiring-style report</h3>
-                <p className="text-sm text-slate-600">
+              <div className="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+                <div className="w-10 h-10 rounded-lg bg-accent text-accent-foreground flex items-center justify-center mx-auto mb-4 font-semibold text-sm">3</div>
+                <h3 className="font-semibold text-foreground mb-2">Generate hiring-style report</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   You get strengths, risks, highlights, growth areas, and a clear recommendation.
                 </p>
               </div>
@@ -121,36 +127,43 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="features" className="py-16 px-4">
+        <section id="features" className="py-20 px-6">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-slate-900 text-center mb-12">
+            <h2 className="text-2xl font-bold text-foreground text-center mb-4 text-balance">
               What you get
             </h2>
-            <ul className="grid sm:grid-cols-2 gap-4">
-              {[
-                "Scores by category (Code Quality, Projects, Docs, Testing, Activity, Tech Breadth)",
-                "Strengths and weaknesses in plain language",
-                "Best repos with short reasoning",
-                "Growth plan with concrete action steps",
-                "Hiring recommendation: Strong Yes / Yes / Maybe / No",
-              ].map((text, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <span className="text-emerald-500 mt-0.5">✓</span>
-                  <span className="text-slate-700">{text}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="text-center text-muted-foreground mb-12 max-w-lg mx-auto">
+              A comprehensive developer profile assessment.
+            </p>
+            <div className="rounded-lg border border-border bg-card p-8 shadow-sm">
+              <ul className="grid sm:grid-cols-2 gap-4">
+                {[
+                  "Scores by category (Code Quality, Projects, Docs, Testing, Activity, Tech Breadth)",
+                  "Strengths and weaknesses in plain language",
+                  "Best repos with short reasoning",
+                  "Growth plan with concrete action steps",
+                  "Hiring recommendation: Strong Yes / Yes / Maybe / No",
+                ].map((text, i) => (
+                  <li key={i} className="flex gap-3 items-start">
+                    <span className="text-primary mt-0.5 flex-shrink-0">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </span>
+                    <span className="text-secondary-foreground">{text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-slate-200 bg-white py-8 px-4 mt-auto">
-        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-700">
+      <footer className="border-t border-border bg-card py-8 px-6 mt-auto">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
             GitHub
           </a>
-          <Link href="/privacy" className="hover:text-slate-700">Privacy</Link>
-          <Link href="/contact" className="hover:text-slate-700">Contact</Link>
+          <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+          <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
         </div>
       </footer>
     </div>
