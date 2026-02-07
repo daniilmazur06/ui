@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Headstarter Track
 
-## Getting Started
+Turn GitHub profiles into hiring-ready insights. Enter a GitHub username, run analysis, and get a structured report with scores, strengths, weaknesses, and a hiring recommendation.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Next.js 14** (App Router)
+- **TypeScript**
+- **Tailwind CSS**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone and install**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Environment variables**
 
-To learn more about Next.js, take a look at the following resources:
+   Create a `.env.local` in the project root:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```env
+   GITHUB_TOKEN=your_github_personal_access_token
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   - Get a token: [GitHub → Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens).
+   - Without `GITHUB_TOKEN`, the app still works but is subject to strict GitHub API rate limits (60 requests/hour for unauthenticated requests).
 
-## Deploy on Vercel
+3. **Run the app**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Open [http://localhost:3000](http://localhost:3000).
+
+## Env vars
+
+| Variable       | Required | Description                                      |
+|----------------|----------|--------------------------------------------------|
+| `GITHUB_TOKEN` | No       | GitHub PAT for higher rate limits (recommended). |
+
+## Usage
+
+1. Go to the landing page.
+2. Enter a GitHub username and click **Analyze Profile**.
+3. Wait ~10–30 seconds (or less if the result is cached).
+4. View the report at `/report/[username]`: overall score, category scores, strengths, weaknesses, technical highlights, growth areas, and recommendation (Strong Yes / Yes / Maybe / No).
+
+## Project structure
+
+- `app/` — Next.js App Router: landing (`/`), report (`/report/[username]`), placeholders (Privacy, Contact).
+- `app/api/analyze/` — `POST /api/analyze`: accepts `{ username, skipCache? }`, returns the analysis report.
+- `lib/types.ts` — Shared TypeScript types for GitHub, report, and API.
+- `lib/github.ts` — GitHub API: user, repos (no forks), languages, repo contents (README, CI, test indicators).
+- `lib/scoring.ts` — Rule-based scoring and report building (categories, strengths, weaknesses, highlights, growth areas, recommendation).
+- `lib/cache.ts` — In-memory cache for analysis results (15-minute TTL) to reduce GitHub requests.
+
+## Optional: AI refinement (TODO)
+
+A separate function can later call an LLM to refine:
+
+- strengths / weaknesses
+- technical highlights
+- growth plan
+- final recommendation
+
+Use a strict JSON output schema when integrating the LLM.
+
+## Scripts
+
+- `npm run dev` — Start dev server.
+- `npm run build` — Production build.
+- `npm run start` — Run production server.
+- `npm run lint` — Run ESLint.
