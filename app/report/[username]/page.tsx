@@ -10,6 +10,7 @@ import type {
   ScoringCategoryScores,
   BonusScores,
 } from "@/lib/types";
+import { saveAnalyzedProfile } from "@/lib/analyzed-profiles";
 
 const CATEGORY_LABELS: Record<keyof AnalysisReport["categoryScores"], string> = {
   codeQuality: "Code Quality",
