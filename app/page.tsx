@@ -24,7 +24,7 @@ export default function HomePage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || "Analysis failed");
+        setError(data?.error || "Cannot find user");
         return;
       }
       if (data.success && data.report) {

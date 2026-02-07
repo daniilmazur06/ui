@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   const user = await fetchGitHubUser(username);
   if (!user) {
     return NextResponse.json<AnalyzeErrorResponse>(
-      { success: false, error: "GitHub user not found" },
+      { success: false, error: "Cannot find user" },
       { status: 404 }
     );
   }

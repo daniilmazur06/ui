@@ -113,7 +113,7 @@ export default function ReportPage() {
       .then((res) => res.json())
       .then((data) => {
         if (!data.success) {
-          setError(data?.error || "Analysis failed");
+          setError(data?.error || "Cannot find user");
           setReport(null);
           return;
         }
