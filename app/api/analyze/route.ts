@@ -45,11 +45,11 @@ export async function POST(request: Request) {
   const repos = await fetchUserRepos(username);
   const topRepos = selectTopRepos(repos, 10);
 
-  const analyzedRepos = await Promise.all(
+  const normalizedRepos = await Promise.all(
     topRepos.map((repo) => analyzeRepo(repo, username))
   );
 
-  const report = buildReport(username, user, analyzedRepos);
+  const report = buildReport(username, user, normalizedRepos);
   setCache(key, report);
 
   return NextResponse.json<AnalyzeResponse>({ success: true, report });

@@ -4,7 +4,12 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { AnalysisReport, RecommendationLevel } from "@/lib/types";
+import type {
+  AnalysisReport,
+  RecommendationLevel,
+  ScoringCategoryScores,
+  BonusScores,
+} from "@/lib/types";
 
 const CATEGORY_LABELS: Record<keyof AnalysisReport["categoryScores"], string> = {
   codeQuality: "Code Quality",
@@ -13,6 +18,22 @@ const CATEGORY_LABELS: Record<keyof AnalysisReport["categoryScores"], string> = 
   testing: "Testing/CI",
   activity: "Activity",
   techBreadth: "Tech Breadth",
+};
+
+const SCORING_CATEGORY_MAX: Record<keyof ScoringCategoryScores, number> = {
+  codeQuality: 30,
+  projectSubstance: 25,
+  documentation: 15,
+  testingCI: 15,
+  activity: 10,
+  techBreadth: 5,
+};
+
+const BONUS_LABELS: Record<keyof BonusScores, string> = {
+  ownership: "Exceptional Ownership",
+  engineeringMaturity: "Engineering Maturity",
+  collaborationImpact: "Collaboration & Impact",
+  raritySignals: "Rarity Signals",
 };
 
 const RECO_LABELS: Record<RecommendationLevel, string> = {
@@ -29,8 +50,16 @@ const RECO_STYLES: Record<RecommendationLevel, string> = {
   no: "bg-red-100 text-red-800 border-red-300",
 };
 
-function ScoreCard({ label, score }: { label: string; score: number }) {
-  const pct = Math.min(100, Math.max(0, score));
+function ScoreCard({
+  label,
+  score,
+  max = 100,
+}: {
+  label: string;
+  score: number;
+  max?: number;
+}) {
+  const pct = max > 0 ? Math.min(100, Math.round((score / max) * 100)) : 0;
   const color =
     pct >= 70 ? "bg-emerald-500"
     : pct >= 50 ? "bg-amber-500"
@@ -40,7 +69,7 @@ function ScoreCard({ label, score }: { label: string; score: number }) {
       <p className="text-sm font-medium text-slate-600 mb-2">{label}</p>
       <div className="flex items-baseline gap-2">
         <span className="text-2xl font-bold text-slate-900">{score}</span>
-        <span className="text-slate-400 text-sm">/ 100</span>
+        <span className="text-slate-400 text-sm">/ {max}</span>
       </div>
       <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
         <div
@@ -227,20 +256,66 @@ export default function ReportPage() {
 
         <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm mb-8 text-center">
           <span className="text-5xl font-bold text-slate-900">{report.overallScore}</span>
-          <span className="text-2xl text-slate-400 ml-1">/ 100</span>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-          {(Object.keys(CATEGORY_LABELS) as Array<keyof AnalysisReport["categoryScores"]>).map(
-            (key) => (
-              <ScoreCard
-                key={key}
-                label={CATEGORY_LABELS[key]}
-                score={report.categoryScores[key]}
-              />
-            )
+          {report.scoreBreakdown ? (
+            <>
+              <p className="text-slate-500 mt-2 text-sm">
+                Base: {report.scoreBreakdown.baseTotal} + Bonus: {report.scoreBreakdown.bonusTotal} (scores can exceed 100)
+              </p>
+            </>
+          ) : (
+            <span className="text-2xl text-slate-400 ml-1">/ 100</span>
           )}
         </div>
+
+        {report.scoreBreakdown && (
+          <section className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Category breakdown (base max 100)</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {(Object.keys(report.scoreBreakdown.categoryScores) as Array<keyof ScoringCategoryScores>).map(
+                (key) => (
+                  <ScoreCard
+                    key={key}
+                    label={key === "projectSubstance" ? "Project Substance" : key === "testingCI" ? "Testing/CI" : CATEGORY_LABELS[key as keyof AnalysisReport["categoryScores"]] ?? key}
+                    score={report.scoreBreakdown!.categoryScores[key]}
+                    max={SCORING_CATEGORY_MAX[key]}
+                  />
+                )
+              )}
+            </div>
+          </section>
+        )}
+
+        {report.scoreBreakdown && (
+          <section className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Bonus breakdown (additive, cap 45)</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {(Object.keys(report.scoreBreakdown.bonusScores) as Array<keyof BonusScores>).map(
+                (key) => (
+                  <ScoreCard
+                    key={key}
+                    label={BONUS_LABELS[key]}
+                    score={report.scoreBreakdown!.bonusScores[key]}
+                    max={key === "ownership" ? 15 : key === "raritySignals" ? 12 : 10}
+                  />
+                )
+              )}
+            </div>
+          </section>
+        )}
+
+        {!report.scoreBreakdown && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+            {(Object.keys(CATEGORY_LABELS) as Array<keyof AnalysisReport["categoryScores"]>).map(
+              (key) => (
+                <ScoreCard
+                  key={key}
+                  label={CATEGORY_LABELS[key]}
+                  score={report.categoryScores[key]}
+                />
+              )
+            )}
+          </div>
+        )}
 
         <section className="mb-8">
           <h3 className="text-lg font-semibold text-slate-900 mb-3">Strengths</h3>
