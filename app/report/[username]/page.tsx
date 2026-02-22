@@ -10,6 +10,7 @@ import type {
   ScoringCategoryScores,
   BonusScores,
 } from "@/lib/types";
+import { saveAnalyzedProfile } from "@/lib/analyzed-profiles";
 
 const CATEGORY_LABELS: Record<keyof AnalysisReport["categoryScores"], string> = {
   codeQuality: "Code Quality",
@@ -44,10 +45,10 @@ const RECO_LABELS: Record<RecommendationLevel, string> = {
 };
 
 const RECO_STYLES: Record<RecommendationLevel, string> = {
-  strong_yes: "bg-emerald-100 text-emerald-800 border-emerald-300",
-  yes: "bg-green-100 text-green-800 border-green-300",
-  maybe: "bg-amber-100 text-amber-800 border-amber-300",
-  no: "bg-red-100 text-red-800 border-red-300",
+  strong_yes: "bg-blue-50 text-blue-800 border-blue-200",
+  yes: "bg-emerald-50 text-emerald-800 border-emerald-200",
+  maybe: "bg-amber-50 text-amber-800 border-amber-200",
+  no: "bg-red-50 text-red-800 border-red-200",
 };
 
 function ScoreCard({
@@ -61,17 +62,17 @@ function ScoreCard({
 }) {
   const pct = max > 0 ? Math.min(100, Math.round((score / max) * 100)) : 0;
   const color =
-    pct >= 70 ? "bg-emerald-500"
-    : pct >= 50 ? "bg-amber-500"
-    : "bg-slate-400";
+    pct >= 70 ? "bg-primary"
+    : pct >= 50 ? "bg-amber-400"
+    : "bg-muted-foreground/40";
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <p className="text-sm font-medium text-slate-600 mb-2">{label}</p>
+    <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+      <p className="text-sm font-medium text-muted-foreground mb-2">{label}</p>
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold text-slate-900">{score}</span>
-        <span className="text-slate-400 text-sm">/ {max}</span>
+        <span className="text-2xl font-bold text-foreground">{score}</span>
+        <span className="text-muted-foreground/60 text-sm">/ {max}</span>
       </div>
-      <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+      <div className="mt-2 h-1.5 w-full rounded-full bg-secondary overflow-hidden">
         <div
           className={`h-full rounded-full ${color}`}
           style={{ width: `${pct}%` }}
@@ -83,10 +84,10 @@ function ScoreCard({
 
 function SkeletonCard() {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm animate-pulse">
-      <div className="h-4 bg-slate-200 rounded w-2/3 mb-2" />
-      <div className="h-8 bg-slate-200 rounded w-1/3" />
-      <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100" />
+    <div className="rounded-lg border border-border bg-card p-4 shadow-sm animate-pulse">
+      <div className="h-4 bg-secondary rounded w-2/3 mb-2" />
+      <div className="h-8 bg-secondary rounded w-1/3" />
+      <div className="mt-2 h-1.5 w-full rounded-full bg-secondary" />
     </div>
   );
 }
@@ -112,7 +113,7 @@ export default function ReportPage() {
       .then((res) => res.json())
       .then((data) => {
         if (!data.success) {
-          setError(data?.error || "Analysis failed");
+          setError(data?.error || "Cannot find user");
           setReport(null);
           return;
         }
@@ -135,38 +136,38 @@ export default function ReportPage() {
 
   if (!username) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <p className="text-slate-600">Missing username.</p>
-        <Link href="/" className="text-emerald-600 ml-2 hover:underline">Go home</Link>
+      <div className="flex items-center justify-center px-6 py-20">
+        <p className="text-muted-foreground">Missing username.</p>
+        <Link href="/" className="text-primary ml-2 hover:underline">Go home</Link>
       </div>
     );
   }
 
   if (loading && !report) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900">
-        <header className="border-b border-slate-200 bg-white">
-          <div className="max-w-4xl mx-auto px-4 py-6">
+      <div>
+        <div className="border-b border-border bg-card">
+          <div className="max-w-4xl mx-auto px-6 py-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-slate-200 animate-pulse" />
+              <div className="w-14 h-14 rounded-full bg-secondary animate-pulse" />
               <div>
-                <div className="h-6 w-32 bg-slate-200 rounded animate-pulse mb-2" />
-                <div className="h-4 w-24 bg-slate-100 rounded animate-pulse" />
+                <div className="h-6 w-32 bg-secondary rounded animate-pulse mb-2" />
+                <div className="h-4 w-24 bg-secondary rounded animate-pulse" />
               </div>
             </div>
           </div>
-        </header>
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="h-24 w-48 bg-slate-200 rounded-xl animate-pulse mb-8" />
+        </div>
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <div className="h-24 w-48 bg-secondary rounded-lg animate-pulse mb-8" />
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
             {[...Array(6)].map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
-          <div className="space-y-6">
-            <div className="h-4 w-24 bg-slate-200 rounded animate-pulse" />
-            <div className="h-20 bg-slate-100 rounded animate-pulse" />
-            <div className="h-20 bg-slate-100 rounded animate-pulse" />
+          <div className="flex flex-col gap-6">
+            <div className="h-4 w-24 bg-secondary rounded animate-pulse" />
+            <div className="h-20 bg-secondary rounded-lg animate-pulse" />
+            <div className="h-20 bg-secondary rounded-lg animate-pulse" />
           </div>
         </div>
       </div>
@@ -175,18 +176,18 @@ export default function ReportPage() {
 
   if (error && !report) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4">
-        <p className="text-red-600 mb-4">{error}</p>
+      <div className="flex flex-col items-center justify-center px-6 py-20">
+        <p className="text-destructive mb-4">{error}</p>
         <div className="flex gap-3">
           <button
             onClick={() => fetchReport(false)}
-            className="px-4 py-2 rounded-lg bg-slate-200 text-slate-800 hover:bg-slate-300"
+            className="px-4 py-2 rounded-lg border border-border bg-card text-foreground hover:bg-secondary transition-colors"
           >
             Try again
           </button>
           <Link
             href="/"
-            className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             Analyze another
           </Link>
@@ -200,30 +201,30 @@ export default function ReportPage() {
   const rec = report.recommendation;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+    <div>
+      <div className="border-b border-border bg-card">
+        <div className="max-w-4xl mx-auto px-6 py-6">
           <div className="flex flex-wrap items-center gap-4">
             <Image
               src={report.user.avatarUrl}
               alt=""
               width={56}
               height={56}
-              className="rounded-full border border-slate-200"
+              className="rounded-full border border-border shadow-sm"
             />
             <div>
-              <h1 className="text-xl font-bold text-slate-900">
+              <h1 className="text-xl font-bold text-foreground">
                 {report.user.name || report.user.login}
               </h1>
               <a
                 href={report.user.profileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-600 hover:text-emerald-600"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
                 @{report.user.login}
               </a>
-              <p className="text-sm text-slate-500 mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 {report.user.followers} followers
                 {report.user.topLanguages.length > 0 && (
                   <> · {report.user.topLanguages.slice(0, 3).join(", ")}</>
@@ -232,44 +233,44 @@ export default function ReportPage() {
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <h2 className="text-lg font-semibold text-slate-700">Overall Score</h2>
+          <h2 className="text-lg font-semibold text-foreground">Overall Score</h2>
           <div className="flex gap-3">
             <Link
               href="/"
-              className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              className="px-4 py-2 rounded-lg border border-border text-foreground hover:bg-secondary transition-colors"
             >
               Analyze Another
             </Link>
             <button
               onClick={() => fetchReport(true)}
               disabled={rerunning}
-              className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60"
+              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 transition-colors"
             >
               {rerunning ? "Re-running…" : "Re-run Analysis"}
             </button>
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm mb-8 text-center">
-          <span className="text-5xl font-bold text-slate-900">{report.overallScore}</span>
+        <div className="rounded-lg border border-border bg-card p-8 shadow-sm mb-8 text-center">
+          <span className="text-5xl font-bold text-primary">{report.overallScore}</span>
           {report.scoreBreakdown ? (
             <>
-              <p className="text-slate-500 mt-2 text-sm">
+              <p className="text-muted-foreground mt-2 text-sm">
                 Base: {report.scoreBreakdown.baseTotal} + Bonus: {report.scoreBreakdown.bonusTotal} (scores can exceed 100)
               </p>
             </>
           ) : (
-            <span className="text-2xl text-slate-400 ml-1">/ 100</span>
+            <span className="text-2xl text-muted-foreground ml-1">/ 100</span>
           )}
         </div>
 
         {report.scoreBreakdown && (
           <section className="mb-8">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Category breakdown (base max 100)</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Category breakdown (base max 100)</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {(Object.keys(report.scoreBreakdown.categoryScores) as Array<keyof ScoringCategoryScores>).map(
                 (key) => (
@@ -287,7 +288,7 @@ export default function ReportPage() {
 
         {report.scoreBreakdown && (
           <section className="mb-8">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Bonus breakdown (additive, cap 45)</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Bonus breakdown (additive, cap 45)</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {(Object.keys(report.scoreBreakdown.bonusScores) as Array<keyof BonusScores>).map(
                 (key) => (
@@ -318,58 +319,83 @@ export default function ReportPage() {
         )}
 
         <section className="mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Strengths</h3>
-          <ul className="list-disc list-inside space-y-1 text-slate-700">
-            {report.strengths.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Strengths</h3>
+            <ul className="flex flex-col gap-2">
+              {report.strengths.map((s, i) => (
+                <li key={i} className="flex gap-3 items-start">
+                  <span className="text-primary mt-0.5 flex-shrink-0">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  </span>
+                  <span className="text-secondary-foreground">{s}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         <section className="mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Weaknesses / Risks</h3>
-          <ul className="list-disc list-inside space-y-1 text-slate-700">
-            {report.weaknesses.map((w, i) => (
-              <li key={i}>{w}</li>
-            ))}
-          </ul>
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Weaknesses / Risks</h3>
+            <ul className="flex flex-col gap-2">
+              {report.weaknesses.map((w, i) => (
+                <li key={i} className="flex gap-3 items-start">
+                  <span className="text-amber-500 mt-0.5 flex-shrink-0">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  </span>
+                  <span className="text-secondary-foreground">{w}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         <section className="mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Technical Highlights</h3>
-          <ul className="space-y-2">
-            {report.technicalHighlights.map((h, i) => (
-              <li key={i} className="flex flex-wrap items-baseline gap-2">
-                <a
-                  href={h.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-emerald-700 hover:underline"
-                >
-                  {h.repo}
-                </a>
-                <span className="text-slate-600">— {h.reason}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Technical Highlights</h3>
+            <ul className="flex flex-col gap-3">
+              {report.technicalHighlights.map((h, i) => (
+                <li key={i} className="flex flex-wrap items-baseline gap-2">
+                  <a
+                    href={h.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-primary hover:underline"
+                  >
+                    {h.repo}
+                  </a>
+                  <span className="text-muted-foreground">{"--"} {h.reason}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         <section className="mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Growth Areas</h3>
-          <ul className="list-disc list-inside space-y-1 text-slate-700">
-            {report.growthAreas.map((g, i) => (
-              <li key={i}>{g}</li>
-            ))}
-          </ul>
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Growth Areas</h3>
+            <ul className="flex flex-col gap-2">
+              {report.growthAreas.map((g, i) => (
+                <li key={i} className="flex gap-3 items-start">
+                  <span className="text-primary mt-0.5 flex-shrink-0">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="m19 12-7-7-7 7"/></svg>
+                  </span>
+                  <span className="text-secondary-foreground">{g}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
-        <section>
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Final Recommendation</h3>
-          <span
-            className={`inline-block px-4 py-2 rounded-lg border font-medium ${RECO_STYLES[rec]}`}
-          >
-            {RECO_LABELS[rec]}
-          </span>
+        <section className="mb-8">
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Final Recommendation</h3>
+            <span
+              className={`inline-block px-4 py-2 rounded-lg border font-medium ${RECO_STYLES[rec]}`}
+            >
+              {RECO_LABELS[rec]}
+            </span>
+          </div>
         </section>
       </div>
     </div>
